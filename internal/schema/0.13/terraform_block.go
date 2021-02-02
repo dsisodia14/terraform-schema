@@ -11,13 +11,13 @@ var terraformBlockSchema = &schema.BlockSchema{
 	Body: &schema.BodySchema{
 		Attributes: map[string]*schema.AttributeSchema{
 			"required_version": {
-				ValueType:  cty.String,
+				Expr:       schema.LiteralValueOnly(cty.String),
 				IsOptional: true,
 				Description: lang.Markdown("Constraint to specify which versions of Terraform can be used " +
 					"with this configuration, e.g. `~> 0.12`"),
 			},
 			"experiments": {
-				ValueType:   cty.Set(cty.DynamicPseudoType),
+				Expr:        schema.ExprConstraints{},
 				IsOptional:  true,
 				Description: lang.Markdown("A set of experimental language features to enable"),
 			},
@@ -49,12 +49,12 @@ var terraformBlockSchema = &schema.BlockSchema{
 					"and where to source it from"),
 				Body: &schema.BodySchema{
 					AnyAttribute: &schema.AttributeSchema{
-						ValueTypes: schema.ValueTypes{
-							cty.Object(map[string]cty.Type{
+						Expr: schema.ExprConstraints{
+							schema.LiteralValueExpr{OfType: cty.Object(map[string]cty.Type{
 								"source":  cty.String,
 								"version": cty.String,
-							}),
-							cty.String,
+							})},
+							schema.LiteralValueExpr{OfType: cty.String},
 						},
 						Description: lang.Markdown("Provider source and version constraint"),
 					},
